@@ -43,42 +43,42 @@ Position Board::getTile(int num) const {
     return {-1, -1};
 }
 
-std::vector<DIRECTION> Board::posible_move() const {
+std::vector<DIRECTION> Board::posibleMove() const {
     std::vector<DIRECTION> posible_dir;
     
-    if (empty.x > 0) posible_dir.push_back(UP);
-    if (empty.x < 2) posible_dir.push_back(DOWN);
-    if (empty.y > 0) posible_dir.push_back(LEFT);
-    if (empty.y < 2) posible_dir.push_back(RIGHT);
+    if (empty.x > 0) posible_dir.push_back(DIRECTION::UP);
+    if (empty.x < 2) posible_dir.push_back(DIRECTION::DOWN);
+    if (empty.y > 0) posible_dir.push_back(DIRECTION::LEFT);
+    if (empty.y < 2) posible_dir.push_back(DIRECTION::RIGHT);
 
     return posible_dir;
 }
 bool Board::move(DIRECTION dir){
-    std::vector<DIRECTION> p_moves = posible_move();
+    std::vector<DIRECTION> p_moves = posibleMove();
     if (std::find(p_moves.begin(), p_moves.end(), dir) == p_moves.end()) return false;
 
     int x = empty.x, 
         y = empty.y;
     switch(dir){
-        case UP: 
+        case DIRECTION::UP: 
             matrix[x][y] = matrix[x-1][y];
             matrix[x-1][y] = 0;
-            empty.x = x--;
+            empty.x--;
             break;    
-        case DOWN:
+        case DIRECTION::DOWN:
             matrix[x][y] = matrix[x+1][y];
             matrix[x+1][y] = 0;
-            empty.x = x++;
+            empty.x++;
             break;    
-        case LEFT:
+        case DIRECTION::LEFT:
             matrix[x][y] = matrix[x][y-1];
             matrix[x][y-1] = 0;
-            empty.y = y--;
+            empty.y--;
             break;    
-        case RIGHT:
+        case DIRECTION::RIGHT:
             matrix[x][y] = matrix[x][y+1];
             matrix[x][y+1] = 0;
-            empty.y = y++;
+            empty.y++;
             break;
     } // switch
 
@@ -100,3 +100,30 @@ bool Board::operator<(const Board& b) const {
     } // for
     return false;
 }
+
+/*
+#include <iostream>
+void Board::show() const {
+    for (int i=0; i<3; i++){
+        std:: cout << "    ";
+        for (int j=0; j<3; j++)
+            std::cout << matrix[i][j] << "  ";
+        std::cout << std::endl;
+    } // for
+    std::cout << std::endl;
+}
+
+int main(){
+    int nums[9] = {1, 0, 2, 3, 4, 5, 6, 7, 8};
+    Board b(nums);
+    
+    std::cout << std::endl; b.show();
+    if (b.move(DIRECTION::LEFT)) b.show();
+    if (b.move(DIRECTION::UP)) b.show();
+    if (b.move(DIRECTION::DOWN)) b.show();
+    if (b.move(DIRECTION::LEFT)) b.show();
+    if (b.move(DIRECTION::RIGHT)) b.show();
+
+    return 0;
+}
+*/
