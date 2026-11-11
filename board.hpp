@@ -3,8 +3,6 @@
 
 #include <vector>
 
-enum class DIRECTION { UP, DOWN, LEFT, RIGHT };
-
 struct Position{
     int x;
     int y;
@@ -23,9 +21,7 @@ public:
     int getTile(const Position&) const;
     Position getTile(int) const;
 
-    std::vector<DIRECTION> posibleMove() const;
-    bool move(DIRECTION);
-
+    bool move(const Position&);
     void show() const; // temp
 
     bool operator ==(const Board&) const;
