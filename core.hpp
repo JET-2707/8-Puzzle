@@ -4,8 +4,10 @@
 #include "board.hpp"
 #include <string>
 #include <chrono>
+#include <vector>
 
 enum class DIFFICULTY {EASY, NO_EASY};
+enum class MOVES_DIFFICULTY { EASY = 8, NO_EASY = 16 };
 enum class GAME_STATUS {PLAYING, WIN, TIME_UP};
 
 class Time {
@@ -66,6 +68,8 @@ public:
     int getRemainingClues() const;
     int getMovements() const;
     int getOptimalMovements() const;
+
+    std::vector<std::vector<int>> generatePuzzle(const std::vector<std::vector<int>> &goal_board, const MOVES_DIFFICULTY &difficulty);
 
     // TEMP: only test / void setMovements(int);
     // TEMP: only test / void setRemainingClues(int);
