@@ -1,5 +1,4 @@
-#ifndef BOARD_HPP
-#define BOARD_HPP
+#pragma once
 
 #include <vector>
 
@@ -29,5 +28,3 @@ public:
     std::vector<int> &operator[](int index);
     const std::vector<int> &operator[](int index) const;
 };
-
-#endif

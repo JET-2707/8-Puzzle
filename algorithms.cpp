@@ -44,7 +44,7 @@ std::vector<Node> Graph::makePath(const std::vector<Node> &nodes, int current_in
     return path;
 }
 
-std::vector<Node> Graph::getNeighbors_(const Node &current){
+std::vector<Node> Graph::getNeighbors(const Node &current){
     std::vector<Node> result; 
     const int dx[] = {1, -1, 0, 0};
     const int dy[] = {0, 0, 1, -1};
@@ -96,7 +96,7 @@ std::vector<Node> Graph::AStar(Node start, Node goal){
 
         explored.insert(current);
 
-        for(auto &neighbor : getNeighbors_(current)){
+        for(auto &neighbor : getNeighbors(current)){
             if(explored.count(neighbor)){ continue; }
 
             int tentative_g = current.g + distance(current, neighbor);

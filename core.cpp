@@ -1,9 +1,8 @@
 #include "core.hpp"
+#include "board.hpp"
 #include <chrono>
 #include <math.h>
 #include <random>
-#include <utility>
-#include <vector>
 
 void Time::setSeconds(int secs) { seconds = secs; }
 int Time::getSeconds() const { return seconds; }
@@ -93,25 +92,12 @@ int Game::getMovements() const { return movements; }
 
 int Game::getOptimalMovements() const { return optimal_movements; }
 
-std::vector<std::vector<int>> Game::generatePuzzle(const std::vector<std::vector<int>> &goal_board, const MOVES_DIFFICULTY &difficulty){
+Board Game::generatePuzzle(const Board &goal_board, const MOVES_DIFFICULTY &difficulty){
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<int> distribution(0, 3);
 
-    std::vector<std::vector<int>> board = goal_board;
-    int x = -1, y = -1;
-
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
-            if(board[i][j] == 0){
-                x = i;
-                y = j;
-                break;
-            }
-        }
-        if(x != -1){ break; }
-    }
-
+    Board board(goal_board);
     const int dx[] = {1, -1, 0, 0};
     const int dy[] = {0, 0, 1, -1};
     int last_direction = -1;
@@ -123,17 +109,18 @@ std::vector<std::vector<int>> Game::generatePuzzle(const std::vector<std::vector
            (random_number == 1 && last_direction == 0) || 
            (random_number == 2 && last_direction == 3) || 
            (random_number == 3 && last_direction == 2)){
-           continue;
+            i--;
+            continue;
         }
 
-        int nx = x + dx[random_number], 
-            ny = y + dy[random_number];
+        Position empty_position = board.getEmpty();
+        int nx = empty_position.x + dx[random_number], 
+            ny = empty_position.y + dy[random_number];
 
         if(nx >= 0 && nx < 3 && ny >= 0 && ny < 3){
-            std::swap(board[x][y], board[nx][ny]);
-            x = nx;
-            y = ny;
-        }
+            board.move({nx, ny});
+            last_direction = random_number;
+        } else { i--; }
     }
     return board; 
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include "board.hpp"
 
@@ -22,6 +24,6 @@ class Graph {
     public:
         int distance(Node a, Node b);
         std::vector<Node> makePath(const std::vector<Node> &nodes, int current_index);
-        std::vector<Node> getNeighbors_(const Node &current);
+        std::vector<Node> getNeighbors(const Node &current);
         std::vector<Node> AStar(Node start, Node goal);
 };
