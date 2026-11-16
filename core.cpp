@@ -109,13 +109,22 @@ std::vector<std::vector<int>> Game::generatePuzzle(const std::vector<std::vector
                 break;
             }
         }
+        if(x != -1){ break; }
     }
 
     const int dx[] = {1, -1, 0, 0};
     const int dy[] = {0, 0, 1, -1};
+    int last_direction = -1;
 
     for(int i = 0; i < static_cast<int>(difficulty); i++){
         int random_number = distribution(gen);
+
+        if((random_number == 0 && last_direction == 1) || 
+           (random_number == 1 && last_direction == 0) || 
+           (random_number == 2 && last_direction == 3) || 
+           (random_number == 3 && last_direction == 2)){
+           continue;
+        }
 
         int nx = x + dx[random_number], 
             ny = y + dy[random_number];
@@ -126,7 +135,6 @@ std::vector<std::vector<int>> Game::generatePuzzle(const std::vector<std::vector
             y = ny;
         }
     }
-
     return board; 
 }
 

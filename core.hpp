@@ -69,7 +69,7 @@ public:
     int getMovements() const;
     int getOptimalMovements() const;
 
-    std::vector<std::vector<int>> generatePuzzle(const std::vector<std::vector<int>> &goal_board, const MOVES_DIFFICULTY &difficulty);
+    static std::vector<std::vector<int>> generatePuzzle(const std::vector<std::vector<int>> &goal_board, const MOVES_DIFFICULTY &difficulty);
 
     // TEMP: only test / void setMovements(int);
     // TEMP: only test / void setRemainingClues(int);
