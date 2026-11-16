@@ -10,11 +10,11 @@ struct Position{
 
 class Board{
 private:
-    int matrix[3][3];
+    std::vector<std::vector<int>> board{3, std::vector<int>(3, 0)};
     Position empty;
 public:
     Board();
-    Board(const int[9]);
+    Board(const std::vector<int> &numbers);
     Board(const Board&); // copy
 
     Position getEmpty() const;
@@ -26,6 +26,8 @@ public:
 
     bool operator ==(const Board&) const;
     bool operator <(const Board&) const;
+    std::vector<int> &operator[](int index);
+    const std::vector<int> &operator[](int index) const;
 };
 
 #endif

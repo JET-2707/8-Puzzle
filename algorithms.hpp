@@ -1,8 +1,8 @@
 #include <vector>
-#include <set>
+#include "board.hpp"
 
 struct Node {
-    std::vector<std::vector<int>> board;
+    Board board;
     int h, g, f;
     int parent;
 
@@ -12,7 +12,7 @@ struct Node {
 
 class Heuristic {
     public:
-        int Manhattan(const Node &current, const std::vector<std::pair<int, int>> &goal_positions);
+        static int Manhattan(const Node &current, const std::vector<std::pair<int, int>> &goal_positions);
 };
 
 class Graph {

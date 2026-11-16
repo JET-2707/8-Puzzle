@@ -1,4 +1,5 @@
 #include "algorithms.hpp"
+#include "board.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -47,17 +48,9 @@ std::vector<Node> Graph::getNeighbors_(const Node &current){
     std::vector<Node> result; 
     const int dx[] = {1, -1, 0, 0};
     const int dy[] = {0, 0, 1, -1};
-    int x, y;
-
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
-            if(current.board[i][j] == 0){
-                x = i;
-                y = j;
-                break;
-            }
-        }
-    }
+    Position empty_position = current.board.getEmpty();
+    int x = empty_position.x, 
+        y = empty_position.y;
 
     for(int i = 0; i < 4; i++){
         int nx = x + dx[i], 
@@ -66,7 +59,9 @@ std::vector<Node> Graph::getNeighbors_(const Node &current){
         if(nx >= 0 && nx < 3 && ny >= 0 && ny < 3){
             Node neighbor = current;
 
-            std::swap(neighbor.board[x][y], neighbor.board[nx][ny]);
+            // std::swap(neighbor.board[x][y], neighbor.board[nx][ny]);
+            Position target_position = {nx, ny};
+            neighbor.board.move(target_position);
             result.push_back(neighbor);
         }
     }
@@ -77,11 +72,10 @@ std::vector<Node> Graph::AStar(Node start, Node goal){
     std::vector<Node> nodes;
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> to_explore;
     std::set<Node> explored;
-    std::map<std::vector<std::vector<int>>, int> best_g;
-    Heuristic h;
+    std::map<Board, int> best_g;
 
     start.g = 0;
-    start.h = h.Manhattan(start, goal_positions);
+    start.h = Heuristic::Manhattan(start, goal_positions);
     start.f = start.g + start.h;
     start.parent = -1;
 
@@ -111,7 +105,7 @@ std::vector<Node> Graph::AStar(Node start, Node goal){
             if(it != best_g.end() && tentative_g >= it->second){ continue; }
 
             neighbor.g = tentative_g;
-            neighbor.h = h.Manhattan(neighbor, goal_positions);
+            neighbor.h = Heuristic::Manhattan(neighbor, goal_positions);
             neighbor.f = neighbor.g + neighbor.h;
             neighbor.parent = current_index;
 
@@ -128,7 +122,7 @@ std::vector<Node> Graph::AStar(Node start, Node goal){
 // --- MADE WITH AI TO QUICKLY TASTE THE ALGORITHM ---
 // #include <iostream>
 //
-// void printBoard(const std::vector<std::vector<int>>& board) {
+// void printBoard(const Board& board) {
 //     std::cout << "-------------\n";
 //     for (int i = 0; i < 3; ++i) {
 //         std::cout << "| ";
@@ -144,19 +138,22 @@ std::vector<Node> Graph::AStar(Node start, Node goal){
 // }
 //
 // int main() {
-//     Node start;
-//     start.board = {
-//         {4, 1, 3},
-//         {7, 2, 6},
-//         {0, 5, 8}
-//     };
+//     Board s
+//         ({
+//             4, 1, 3,
+//             7, 2, 6,
+//             0, 5, 8
+//         }),
+//           g
+//         ({
+//             1, 2, 3,
+//             4, 5, 6,
+//             7, 8, 0
+//         });
 //
-//     Node goal;
-//     goal.board = {
-//         {1, 2, 3},
-//         {4, 5, 6},
-//         {7, 8, 0}
-//     };
+//     Node start, goal;
+//     start.board = s;
+//     goal.board = g;
 //
 //     std::cout << "=== ESTADO INICIAL ===" << std::endl;
 //     printBoard(start.board);
