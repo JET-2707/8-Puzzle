@@ -54,7 +54,12 @@ void Stopwatch::resume(){
     }
 }
 
+Level Game::makeLevel(DIFFICULTY diff, int optimal){
+        if (diff == DIFFICULTY::EASY) return {DIFFICULTY::EASY, Time(0), 5, 1};
+        return {DIFFICULTY::NO_EASY, Time(optimal * SECONDS_PER_MOVE), 3, 2};
+    }
 bool Game::moveClick(const Position& p){ 
+    if (game_status != GAME_STATUS::PLAYING) return false;
     if (board.move(p)){
         movements++;
         won();
@@ -63,18 +68,28 @@ bool Game::moveClick(const Position& p){
 
     return false;
 }
+bool Game::update(){
+    if (game_status != GAME_STATUS::PLAYING) return false;
+    if (level.limit_time.getSeconds() > 0 && playtime.elapsed() >= level.limit_time){
+        game_status = GAME_STATUS::TIME_UP;
+        playtime.pause();
+        return false;
+    } // if
+
+    return true;
+}
 void Game::won(){ 
     if (board == goal){
          game_status = GAME_STATUS::WIN;
          playtime.pause();
     } // if
 }
-void Game::useClue(const Position& p){
-    if (remaining_clues>0 && board.move(p)){
+bool Game::useClue(){
+    if (game_status == GAME_STATUS::PLAYING && remaining_clues>0){
         remaining_clues--;
-        movements++;
-        won();
+        return true;
     } // if
+    return false;
 }
 
 Level Game::getLevel() const { return level; }

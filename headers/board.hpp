@@ -11,6 +11,8 @@ class Board{
 private:
     std::vector<std::vector<int>> board{3, std::vector<int>(3, 0)};
     Position empty;
+
+    int inversions() const;
 public:
     Board();
     Board(const std::vector<int> &numbers);
@@ -20,8 +22,9 @@ public:
     int getTile(const Position&) const;
     Position getTile(int) const;
 
+    static bool validLayout(const std::vector<int>&);
+    bool isSolvableTo(const Board& other) const;
     bool move(const Position&);
-    void show() const; // temp
 
     bool operator ==(const Board&) const;
     bool operator <(const Board&) const;

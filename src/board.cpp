@@ -49,6 +49,35 @@ Position Board::getTile(int num) const {
     return {-1, -1};
 }
 
+bool Board::validLayout(const std::vector<int>& values){
+    if (values.size() != 9) return false;
+    bool seen[9] = {false};
+
+    for (int n : values){
+        if (n < 0 || n > 8 || seen[n]) return false;
+        seen[n] = true;
+    } // for
+
+    return true;
+}
+int Board::inversions() const {
+    std::vector<int> flat;
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            if (board[i][j] != 0) flat.push_back(board[i][j]);
+
+    int count = 0;
+    for (std::size_t a = 0; a < flat.size(); a++)
+        for (std::size_t c = a + 1; c < flat.size(); c++)
+            if (flat[a] > flat[c]) count++;
+
+    return count;
+}
+bool Board::isSolvableTo(const Board& other) const {
+    return inversions() % 2 == other.inversions() % 2;
+}
+
+
 bool Board::move(const Position& pos){
     int x = empty.x, 
         y = empty.y;
@@ -101,30 +130,3 @@ bool Board::operator<(const Board& b) const {
 std::vector<int> &Board::operator[](int index){ return board[index]; }
 
 const std::vector<int> &Board::operator[](int index) const{ return board[index]; }
-
-/*
-#include <iostream>
-void Board::show() const {
-    for (int i=0; i < board.size(); i++){
-        std:: cout << "    ";
-        for (int j=0; j < board[i].size(); j++)
-            std::cout << board[i][j] << "  ";
-        std::cout << std::endl;
-    } // for
-    std::cout << std::endl;
-}
-
-int main(){
-    int nums[9] = {1, 0, 2, 3, 4, 5, 6, 7, 8};
-    Board b(nums);
-
-    std::cout << std::endl; b.show();
-    if (b.move(b.getTile(1))) b.show();
-    if (b.move(b.getTile(3))) b.show();
-    if (b.move(b.getTile(8))) b.show();
-    if (b.move(b.getTile(5))) b.show();
-    if (b.move(b.getTile(4))) b.show();
-
-    return 0;
-}
-*/

@@ -5,6 +5,8 @@
 #include <chrono>
 #include <vector>
 
+constexpr int SECONDS_PER_MOVE = 10;
+
 enum class DIFFICULTY {EASY, NO_EASY};
 enum class MOVES_DIFFICULTY { EASY = 8, NO_EASY = 16 };
 enum class GAME_STATUS {PLAYING, WIN, TIME_UP};
@@ -36,7 +38,6 @@ public:
     Time elapsed() const;
     void pause();
     void resume();
-    // TEMP: only test / void setElapsed(const Time&);
 };
 
 struct Level {
@@ -70,16 +71,14 @@ public:
     int getRemainingClues() const;
     int getMovements() const;
     int getOptimalMovements() const;
-
+    
+    static Level makeLevel(DIFFICULTY, int);
     static Board generatePuzzle(const Board &goal_board, const MOVES_DIFFICULTY &difficulty);
 
-    // TEMP: only test / void setMovements(int);
-    // TEMP: only test / void setRemainingClues(int);
-    // TEMP: only test / void setElapsedTime(const Time&);
-
     bool moveClick(const Position&);
+    bool update();
     void won();
-    void useClue(const Position& p);
+    bool useClue();
 };
 
 class Score {
