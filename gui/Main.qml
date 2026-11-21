@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
+
+import Puzzle 1.0
 
 ApplicationWindow {
     width: 440
@@ -9,6 +10,9 @@ ApplicationWindow {
     title: "8-Puzzle"
     color: "#14161b"
 
+    PuzzleController {
+        id: puzzle
+    }
 
     Item { // Difficulty
         id: difficulty
@@ -36,9 +40,7 @@ ApplicationWindow {
                 radius: 9
                 color: "#3b82f6"
 
-                Behavior on x {
-                        NumberAnimation { duration: 180; easing.type: Easing.OutCubic }
-                    }
+                Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
                 }
 
             Row {
@@ -66,58 +68,20 @@ ApplicationWindow {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: difficulty.select_index = index
+
                         }
                     }
                 }
             }
         }
-    }
+    }  
 
-    Item { // Board
-        id: board
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: 28
-        width: 310
-        height: 310
 
-        property var tiles: ["1", "2", "3", "4", "5", "6", "7", "8", " "]
-
-        Rectangle {
-            anchors.fill: parent
-            radius: 16
-            color: "#1e222b"
-            border.color: "#2e3440"
-            border.width: 2
-
-            GridLayout {
-                anchors.fill: parent
-                anchors.margins: 12
-                columns: 3
-                rows: 3
-                columnSpacing: 10
-                rowSpacing: 10
-
-                Repeater {
-                    model: board.tiles
-
-                    Rectangle {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        radius: 12
-                        color: "#2a303c"
-                        border.color: "#3b4354"
-                        border.width: 1
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: modelData
-                            color: "#f1f5f9"
-                            font.pixelSize: Math.min(parent.width, parent.height) * 0.42
-                            font.bold: true
-                        }
-                    }
-                }
-            }
-        }
+    Board {
+        id: puzzle_board
+        x: (parent.width - width) / 2
+        y: 100
+        tiles: puzzle.tiles
+        next_tile_index: puzzle.next_tile_index
     }
 }
