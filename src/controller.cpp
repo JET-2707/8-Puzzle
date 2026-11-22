@@ -125,7 +125,7 @@ void PuzzleController::setMode(const QString &mode_name){
         return;
     }
 
-    active_mode = QStringLiteral("samart");
+    active_mode = QStringLiteral("smart");
     current_solvable = smart_mode.isSolvable();
     status_message_ = (smart_mode.getPath().empty()) ? QStringLiteral("Ready") : QStringLiteral("Solution ready");
     emit stateChanged();
@@ -188,6 +188,7 @@ bool PuzzleController::clickTile(int tile_index){
 
     Position clicked_position{tile_index / 3, tile_index % 3};
     bool moved = manual_mode.click(clicked_position);
+    refreshManualStatus();
     emit stateChanged();
     return moved;
 }
