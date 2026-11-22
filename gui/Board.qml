@@ -1,89 +1,61 @@
 import QtQuick
 
 Item {
-    id: board
-    width: 310
-    height: 310
+    id: board_root
 
-    property var tiles: ["1", "2", "3", "4", "5", "6", "7", "8", "0"]
+    property var tile_values: []
     property int next_tile_index: -1
+    property bool is_solved: false
 
-    readonly property int columns: 3
-    readonly property int rows: 3
-    readonly property real pad: 12
-    readonly property real gap: 10
-    readonly property real inner_width: width - pad * 2
-    readonly property real inner_height: height - pad * 2
-    readonly property real cell_width: (inner_width - gap * (columns - 1)) / columns
-    readonly property real cell_height: (inner_height - gap * (rows - 1)) / rows
-
-    function cellX(column){ return pad + column * (cell_width + gap) }
-    function cellY(row){ return pad + row * (cell_height + gap) }
-    function trySwap(index){
-        const zero_index = tiles.indexOf("0")
-        if(zero_index === -1 || index === zero_index){ return }
-
-        const row1 = Math.floor(index / columns)
-        const column1 = index % columns
-        const row0 = Math.floor(zero_index / columns)
-        const column0 = zero_index % columns
-
-        const adjacent = (Math.abs(row1 - row0) + Math.abs(column1 - column0)) === 1
-
-        if(!adjacent){ return }
-
-        const next = tiles.slice()
-        const temporal = next[index]
-        next[index] = next[zero_index]
-        next[zero_index] = temporal
-        board.tiles = next
-    }
+    readonly property int board_size: Math.max(0, Math.min(width, height))
 
     Rectangle {
-        anchors.fill: parent
-        radius: 16
-        color: "#1e222b"
-        border.color: "#2e3440"
-        border.width: 2
+        id: board_frame
+        width: board_root.board_size
+        height: board_root.board_size
+        anchors.centerIn: parent
+        radius: 14
+        color: "#E2E8F0"
 
-        Repeater {
-            model: board.tiles
+        Grid {
+            id: tile_grid
+            anchors.fill: parent
+            anchors.margins: 10
+            columns: 3
+            rows: 3
+            spacing: 10
 
-            Rectangle {
-                id: tileRect
-                readonly property int r: Math.floor(index / board.columns)
-                readonly property int c: index % board.columns
-                readonly property bool isZero: modelData === "0"
+            readonly property real cell_size: Math.max(0, (width - spacing * 2) / 3)
 
-                x: board.cellX(c)
-                y: board.cellY(r)
-                width: board.cell_width
-                height: board.cell_height
-                radius: 12
+            Repeater {
+                model: 9
 
-                readonly property bool is_next_tile: index === board.next_tile_index && !isZero
+                Rectangle {
+                    id: tile_card
+                    width: tile_grid.cell_size
+                    height: tile_grid.cell_size
+                    radius: 10
 
-                visible: !isZero
-                opacity: isZero ? 0 : 1
-                color: is_next_tile ? "#1e3a5f" : "#2a303c"
-                border.color: is_next_tile ? "#60a5fa" : "#3b4354"
-                border.width: is_next_tile ? 2 : 1
+                    readonly property var current_list: (board_root.tile_values) ? board_root.tile_values : []
+                    readonly property string tile_label: (index < current_list.length) ? String(current_list[index]) : ""
+                    readonly property bool is_empty: tile_label === "" || tile_label === "0"
+                    readonly property bool is_hint: (!board_root.is_solved && index === board_root.next_tile_index)
 
-                Behavior on x { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
-                Behavior on y { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    color: (is_empty) ? "transparent" : ((is_hint) ? "#DBEAFE" : "#FFFFFF")
 
-                Text {
-                    anchors.centerIn: parent
-                    text: modelData
-                    color: "#f1f5f9"
-                    font.pixelSize: Math.min(parent.width, parent.height) * 0.42
-                    font.bold: true
-                }
+                    border.width: (is_empty) ? 0 : ((is_hint) ? 2 : 1)
+                    border.color: (is_hint) ? "#2563EB" : "#CBD5E1"
 
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: board.trySwap(index)
+                    Behavior on color { ColorAnimation { duration: 140 } }
+
+                    Text {
+                        anchors.centerIn: parent
+                        visible: !tile_card.is_empty
+                        text: tile_card.tile_label
+                        font.pixelSize: Math.max(16, tile_grid.cell_size * 0.34)
+                        font.weight: Font.Bold
+                        color: (tile_card.is_hint) ? "#1D4ED8" : "#0F172A"
+                    }
                 }
             }
         }
