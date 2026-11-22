@@ -21,6 +21,8 @@ class Graph {
     private:
         std::vector<std::pair<int,int>> goal_positions = {{2, 2}, {0, 0}, {0, 1}, {0, 2}, {1, 0}, {1, 1}, {1, 2}, {2, 0}, {2, 1}};
         std::vector<std::pair<int, int>> neighbors;
+
+        std::vector<std::pair<int, int>> makeGoalPositions(const Board &goal) const;
     public:
         int distance(Node a, Node b);
         std::vector<Node> makePath(const std::vector<Node> &nodes, int current_index);

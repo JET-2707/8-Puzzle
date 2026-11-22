@@ -68,14 +68,28 @@ std::vector<Node> Graph::getNeighbors(const Node &current){
     return result;
 }
 
+std::vector<std::pair<int, int>> Graph::makeGoalPositions(const Board &goal) const{
+    std::vector<std::pair<int, int>> positions(9);
+
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            int value = goal[i][j];
+            positions[value] = {i, j};
+        }
+    }
+    return positions;
+}
+
 std::vector<Node> Graph::AStar(Node start, Node goal){
     std::vector<Node> nodes;
     std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> to_explore;
     std::set<Node> explored;
     std::map<Board, int> best_g;
 
+    std::vector<std::pair<int, int>> target_position = makeGoalPositions(goal.board);
+
     start.g = 0;
-    start.h = Heuristic::Manhattan(start, goal_positions);
+    start.h = Heuristic::Manhattan(start, target_position);
     start.f = start.g + start.h;
     start.parent = -1;
 
@@ -105,7 +119,7 @@ std::vector<Node> Graph::AStar(Node start, Node goal){
             if(it != best_g.end() && tentative_g >= it->second){ continue; }
 
             neighbor.g = tentative_g;
-            neighbor.h = Heuristic::Manhattan(neighbor, goal_positions);
+            neighbor.h = Heuristic::Manhattan(neighbor, target_position);
             neighbor.f = neighbor.g + neighbor.h;
             neighbor.parent = current_index;
 
@@ -118,65 +132,3 @@ std::vector<Node> Graph::AStar(Node start, Node goal){
     }
     return {};
 }
-
-// --- MADE WITH AI TO QUICKLY TASTE THE ALGORITHM ---
-// #include <iostream>
-//
-// void printBoard(const Board& board) {
-//     std::cout << "-------------\n";
-//     for (int i = 0; i < 3; ++i) {
-//         std::cout << "| ";
-//         for (int j = 0; j < 3; ++j) {
-//             if (board[i][j] == 0) {
-//                 std::cout << "  | ";
-//             } else {
-//                 std::cout << board[i][j] << " | ";
-//             }
-//         }
-//         std::cout << "\n-------------\n";
-//     }
-// }
-//
-// int main() {
-//     Board s
-//         ({
-//             4, 1, 3,
-//             7, 2, 6,
-//             0, 5, 8
-//         }),
-//           g
-//         ({
-//             1, 2, 3,
-//             4, 5, 6,
-//             7, 8, 0
-//         });
-//
-//     Node start, goal;
-//     start.board = s;
-//     goal.board = g;
-//
-//     std::cout << "=== ESTADO INICIAL ===" << std::endl;
-//     printBoard(start.board);
-//
-//     std::cout << "\n=== ESTADO OBJETIVO ===" << std::endl;
-//     printBoard(goal.board);
-//
-//     Graph solver;
-//     std::cout << "\nCalculando solucion con A* (Version Indices)...\n" << std::endl;
-//
-//     std::vector<Node> path = solver.AStar(start, goal);
-//
-//     if (path.empty()) {
-//         std::cout << "No se encontro ninguna solucion (o el estado inicial es el objetivo)." << std::endl;
-//     } else {
-//         std::cout << "¡Solucion encontrada en " << path.size() - 1 << " movimientos!\n" << std::endl;
-//
-//         for (size_t i = 0; i < path.size(); ++i) {
-//             std::cout << "Paso " << i << ":" << std::endl;
-//             printBoard(path[i].board);
-//             std::cout << std::endl;
-//         }
-//     }
-//
-//     return 0;
-// }
