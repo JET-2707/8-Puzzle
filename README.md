@@ -1,4 +1,4 @@
-# 8 uzzle
+# 8 Puzzle
 
 
 # Project Structure
@@ -22,6 +22,8 @@
 │   └── 8-puzzle.cpp
 ├── gui/
 │   ├── Main.qml
+│   ├── TopBar.qml
+│   ├── StepControls.qml
 │   └── Board.qml
 └── README.md
 ```
@@ -68,6 +70,14 @@ set_source_files_properties(gui/Board.qml
     PROPERTIES QT_RESOURCE_ALIAS Board.qml
 )
 
+set_source_files_properties(gui/TopBar.qml
+    PROPERTIES QT_RESOURCE_ALIAS TopBar.qml
+)
+
+set_source_files_properties(gui/StepControls.qml
+    PROPERTIES QT_RESOURCE_ALIAS StepControls.qml
+)
+
 qt_add_qml_module(puzzleApp
     URI Puzzle
     VERSION 1.0
@@ -75,6 +85,8 @@ qt_add_qml_module(puzzleApp
     QML_FILES
         gui/Main.qml
         gui/Board.qml
+        gui/TopBar.qml
+        gui/StepControls.qml
 
     SOURCES
         headers/algorithms.hpp
