@@ -1,5 +1,9 @@
 #include "../headers/controller.hpp"
 #include "../headers/board.hpp"
+#include "core.hpp"
+#include <qobject.h>
+#include <qtmetamacros.h>
+#include <vector>
 
 PuzzleController::PuzzleController(QObject *parent) : QObject(parent){ generateAndSolve(0); }
 
@@ -16,15 +20,69 @@ QStringList PuzzleController::boardToStringList(const Board& goal_board) const {
     return list;
 }
 
-QStringList PuzzleController::getTileValues() const { return boardToStringList(smart_mode.getBoard()); }
+bool PuzzleController::parseBoardInput(const QStringList &raw_values, std::vector<int> &out_values) const {
+    if(raw_values.size() != 9){ return false; }
 
-int PuzzleController::getCurrentStep() const { return smart_mode.getStep(); }
+    out_values.clear();
+    out_values.reserve(9);
 
-int PuzzleController::getTotalSteps() const { return smart_mode.getTotalSteps(); }
+    for(const QString &raw_item : raw_values){
+        QString taken = raw_item.trimmed();
 
-bool PuzzleController::getIsSolved() const { return smart_mode.isFinished(); }
+        if(taken.isEmpty()){ out_values.push_back(0); continue; }
+    
+        bool ok_flag = false;
+        int num_value = taken.toInt(&ok_flag);
+
+        if(!ok_flag){ return false; }
+        out_values.push_back(num_value);
+    }
+    return Board::validLayout(out_values);
+}
+
+void PuzzleController::refreshManualStatus(){
+    manual_mode.update();
+    GAME_STATUS game_status = manual_mode.getGame().getGameStatus();
+
+    if(game_status == GAME_STATUS::WIN){ status_message_ = QStringLiteral("Finished. Score: %1").arg(manual_mode.getFinalScore().getPoints()); }
+    else if(game_status == GAME_STATUS::TIME_UP){ status_message_ = QStringLiteral("Time up."); }
+    else { status_message_ = QStringLiteral("Manual mode: start"); }
+}
+
+QString PuzzleController::getCurrentMode() const { return active_mode; }
+
+bool PuzzleController::getIsManualMode() const { return active_mode == QStringLiteral("manual"); }
+
+QStringList PuzzleController::getTileValues() const { 
+    if(getIsManualMode()){ return boardToStringList(manual_mode.getBoard()); }
+    return boardToStringList(smart_mode.getBoard());
+}
+
+int PuzzleController::getCurrentStep() const {
+    if(getIsManualMode()){ return manual_mode.getGame().getMovements(); }
+    return smart_mode.getStep();
+}
+
+int PuzzleController::getTotalSteps() const {
+    if(getIsManualMode()){ return manual_mode.getGame().getOptimalMovements(); }
+    return smart_mode.getTotalSteps();
+}
+
+bool PuzzleController::getIsSolved() const {
+    if(getIsManualMode()){ return manual_mode.getGame().getGameStatus() == GAME_STATUS::WIN; }
+    return smart_mode.isFinished();
+}
+
+bool PuzzleController::getIsSolvable() const { return current_solvable; }
 
 int PuzzleController::getNextTileIndex() const {
+    if(getIsManualMode()){ 
+        Position clue_position = manual_mode.getClue();
+
+        if(clue_position.x < 0 || clue_position.x >= 3 || clue_position.y < 0 || clue_position.y >= 3){ return -1; }
+        return clue_position.x * 3 + clue_position.y;
+    }
+
     const Position next_position = smart_mode.getNextTile();
 
     if(next_position.x < 0 || next_position.x >= 3 || next_position.y < 0 || next_position.y >= 3){ return -1; }
@@ -32,19 +90,104 @@ int PuzzleController::getNextTileIndex() const {
 }
 
 void PuzzleController::generateAndSolve(int difficulty_index){
+    if(getIsManualMode()){
+        DIFFICULTY manual_difficulty = (difficulty_index == 0) ? DIFFICULTY::EASY : DIFFICULTY::NO_EASY;
+        manual_mode.newGame(manual_difficulty);
+        current_solvable = true;
+        refreshManualStatus();
+        emit stateChanged();
+        return;
+    }
+
     MOVES_DIFFICULTY difficulty = (difficulty_index == 0) ? MOVES_DIFFICULTY::EASY : MOVES_DIFFICULTY::NO_EASY;
 
     do { smart_mode.randomStart(difficulty); } 
     while(!smart_mode.solve() || smart_mode.getTotalSteps() == 0);
 
-    emit boardChanged();
+    current_solvable = true;
+    status_message_ = QStringLiteral("Board ready");
+    emit stateChanged();
 }
 
-void PuzzleController::nextStep(){ if(smart_mode.nextStep()){ emit boardChanged(); } }
+QString PuzzleController::getStatusMessage() const { return status_message_; }
 
-void PuzzleController::previousStep(){ if(smart_mode.previousStep()){ emit boardChanged(); } }
+int PuzzleController::getMoveCount() const { return manual_mode.getGame().getMovements(); }
+
+int PuzzleController::getFinalScore() const { return manual_mode.getFinalScore().getPoints(); }
+
+void PuzzleController::setMode(const QString &mode_name){
+    if(mode_name == QStringLiteral("manual")){
+        active_mode = QStringLiteral("manual");
+        manual_mode.newGame(DIFFICULTY::EASY);
+        current_solvable = true;
+        refreshManualStatus();
+        emit stateChanged();
+        return;
+    }
+
+    active_mode = QStringLiteral("samart");
+    current_solvable = smart_mode.isSolvable();
+    status_message_ = (smart_mode.getPath().empty()) ? QStringLiteral("Ready") : QStringLiteral("Solution ready");
+    emit stateChanged();
+}
+
+bool PuzzleController::solveCustomBoards(const QStringList &start_inputs, const QStringList &goal_inputs){
+    std::vector<int> parsed_start;
+    std::vector<int> parsed_goal;
+
+    if(!parseBoardInput(start_inputs, parsed_start) || !parseBoardInput(goal_inputs, parsed_goal)){
+        current_solvable = false;
+        status_message_ = QStringLiteral("Invalid entry");
+        emit stateChanged();
+        return false;
+    }
+
+    smart_mode.setStart(parsed_start);
+    smart_mode.setGoal(parsed_goal);
+
+    if(!smart_mode.isSolvable()){
+        current_solvable = false;
+        status_message_ = QStringLiteral("Is not solvable");
+        emit stateChanged();
+        return false;
+    }
+    if(!smart_mode.solve()){
+        current_solvable = false;
+        status_message_ = QStringLiteral("A* didin't found a solution");
+        emit stateChanged();
+        return false;
+    }
+
+    active_mode = QStringLiteral("smart");
+    current_solvable = true;
+    status_message_ = QStringLiteral("Soluble");
+    emit stateChanged();
+    return true;
+}
+
+void PuzzleController::nextStep(){ 
+    if(getIsManualMode()){ return; }
+    if(smart_mode.nextStep()){ emit stateChanged(); } 
+}
+
+void PuzzleController::previousStep(){
+    if(getIsManualMode()){ return; }
+    if(smart_mode.previousStep()){ emit stateChanged(); }
+}
 
 void PuzzleController::restartSteps(){
+    if(getIsManualMode()){ return; }
+
     smart_mode.restartSteps();
-    emit boardChanged();
+    emit stateChanged();
+}
+
+bool PuzzleController::clickTile(int tile_index){
+    if(!getIsManualMode()){ return false; }
+    if(tile_index < 0 || tile_index >= 9){ return false; }
+
+    Position clicked_position{tile_index / 3, tile_index % 3};
+    bool moved = manual_mode.click(clicked_position);
+    emit stateChanged();
+    return moved;
 }
