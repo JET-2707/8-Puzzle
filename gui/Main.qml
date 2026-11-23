@@ -31,6 +31,8 @@ Window {
             total_steps: puzzle_controller.total_steps
             is_solved: puzzle_controller.is_solved
             is_manual_mode: puzzle_controller.is_manual_mode
+            has_timer: puzzle_controller.has_timer
+            remaining_time_txt: puzzle_controller.remaining_time_txt
             status_message: puzzle_controller.status_message
 
             onModeSelected: function(mode_name){
@@ -40,7 +42,11 @@ Window {
 
                 puzzle_controller.setMode(mode_name)
             }
-            onDifficultySelected: function(new_difficulty){ root_window.selected_difficulty = new_difficulty }
+            onDifficultySelected: function(new_difficulty){            
+                root_window.selected_difficulty = new_difficulty
+                if(puzzle_controller.is_manual_mode){ puzzle_controller.generateAndSolve(new_difficulty) }
+            }
+
             onGenerateRequested: function(){ puzzle_controller.generateAndSolve(root_window.selected_difficulty) }
             onCustomConfigRequested: function(){ custom_panel.visible = !custom_panel.visible }
             onScoresMenuRequested: function(){

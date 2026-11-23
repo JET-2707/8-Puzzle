@@ -7,7 +7,29 @@
 #include <qtmetamacros.h>
 #include <vector>
 
-PuzzleController::PuzzleController(QObject *parent) : QObject(parent){ loadSortScores(); generateAndSolve(0); }
+PuzzleController::PuzzleController(QObject *parent) : QObject(parent){
+    manual_timer.setInterval(250);
+    connect(&manual_timer, &QTimer::timeout, this, [this](){ // wtf
+        if(!getIsManualMode()){ manual_timer.stop(); return; }    
+        refreshManualStatus();
+        emit stateChanged();
+    });
+
+    loadSortScores(); 
+    generateAndSolve(0);
+}
+
+void PuzzleController::syncTimerStatus(){
+    if(!getIsManualMode()){ manual_timer.stop(); return; }
+
+    const Game &current_game = manual_mode.getGame();
+    bool is_hard_manual = (current_game.getLevel().difficulty == DIFFICULTY::NO_EASY);
+    bool is_playing = (current_game.getGameStatus() == GAME_STATUS::PLAYING);
+
+    if(is_hard_manual && is_playing){
+        if(!manual_timer.isActive()){ manual_timer.start(); }
+    } else { manual_timer.stop(); }
+}
 
 void PuzzleController::loadSortScores(){
     best_scores_vector =  Files::loadFile();
@@ -68,6 +90,7 @@ bool PuzzleController::parseBoardInput(const QStringList &raw_values, std::vecto
 void PuzzleController::refreshManualStatus(){
     manual_mode.update();
     recordManualScoreWon();
+    syncTimerStatus();
     GAME_STATUS game_status = manual_mode.getGame().getGameStatus();
 
     if(game_status == GAME_STATUS::WIN){ status_message_ = QStringLiteral("Finished. Score: %1").arg(manual_mode.getFinalScore().getPoints()); }
@@ -149,6 +172,20 @@ QVariantList PuzzleController::getBestScores() const {
 
     for(const Score &sc : best_scores_vector){ results.append(sc.getPoints()); }
     return results;
+}
+
+bool PuzzleController::getHasTimer() const {
+    if(!getIsManualMode()){ return false; }
+    return manual_mode.getGame().getLevel().difficulty == DIFFICULTY::NO_EASY;
+}
+
+QString PuzzleController::getRemainingTimeTxt() const {
+    if(!getHasTimer()){ return QString(); }
+
+    const Game& current_game = manual_mode.getGame();
+    Time remaining = current_game.getLevel().limit_time - current_game.getPlaytime().elapsed();
+
+    return QString::fromStdString(remaining.timeText());
 }
 
 void PuzzleController::setMode(const QString &mode_name){

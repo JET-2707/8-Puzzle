@@ -11,6 +11,8 @@ Item {
     property bool is_solved: false
     property bool is_manual_mode: false
     property string status_message: ""
+    property bool has_timer: false
+    property string remaining_time_txt: ""
 
     readonly property int mode_index: top_bar_root.is_manual_mode ? 1 : 0
 
@@ -275,6 +277,17 @@ Item {
                 font.pixelSize: 14
                 font.weight: Font.Medium
                 color: "#cbd5e1"
+            }
+
+            Text {
+                id: timer_label
+                visible: top_bar_root.has_timer
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Time: " + top_bar_root.remaining_time_txt
+                font.pixelSize: 14
+                font.bold: true
+                color: "#f59e0b"
             }
 
             Text {

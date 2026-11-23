@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVariantList>
+#include <QTimer>
 #include <qcontainerfwd.h>
 #include <qobject.h>
 #include <qqmlregistration.h>
@@ -31,10 +32,13 @@ class PuzzleController : public QObject {
         Q_PROPERTY(int move_count READ getMoveCount NOTIFY stateChanged)
         Q_PROPERTY(int final_score READ getFinalScore NOTIFY stateChanged)
         Q_PROPERTY(QVariantList best_scores READ getBestScores NOTIFY stateChanged)
+        Q_PROPERTY(bool has_timer READ getHasTimer NOTIFY stateChanged)
+        Q_PROPERTY(QString remaining_time_txt READ getRemainingTimeTxt NOTIFY stateChanged)
     private:
         QString active_mode = QStringLiteral("smart");
         SmartMode smart_mode;
         ManualMode manual_mode{DIFFICULTY::EASY};
+        QTimer manual_timer;
         bool current_solvable = true;
         QString status_message_;
         std::vector<Score> best_scores_vector;
@@ -43,6 +47,7 @@ class PuzzleController : public QObject {
         QStringList boardToStringList(const Board& goal_board) const;
         bool parseBoardInput(const QStringList &raw_values, std::vector<int> &out_values) const;
         void refreshManualStatus();
+        void syncTimerStatus();
         void loadSortScores();
         void recordManualScoreWon();
     public:
@@ -60,6 +65,8 @@ class PuzzleController : public QObject {
         int getMoveCount() const;
         int getFinalScore() const;
         QVariantList getBestScores() const;
+        bool getHasTimer() const;
+        QString getRemainingTimeTxt() const;
 
         Q_INVOKABLE void setMode(const QString &mode_name);
         Q_INVOKABLE void generateAndSolve(int difficulty_index);
