@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QVariantList>
+#include <qcontainerfwd.h>
 #include <qobject.h>
 #include <qqmlregistration.h>
 #include <qtmetamacros.h>
@@ -28,16 +30,21 @@ class PuzzleController : public QObject {
         Q_PROPERTY(QString status_message READ getStatusMessage NOTIFY stateChanged)
         Q_PROPERTY(int move_count READ getMoveCount NOTIFY stateChanged)
         Q_PROPERTY(int final_score READ getFinalScore NOTIFY stateChanged)
+        Q_PROPERTY(QVariantList best_scores READ getBestScores NOTIFY stateChanged)
     private:
         QString active_mode = QStringLiteral("smart");
         SmartMode smart_mode;
         ManualMode manual_mode{DIFFICULTY::EASY};
         bool current_solvable = true;
         QString status_message_;
+        std::vector<Score> best_scores_vector;
+        bool score_recorded = false;
 
         QStringList boardToStringList(const Board& goal_board) const;
         bool parseBoardInput(const QStringList &raw_values, std::vector<int> &out_values) const;
         void refreshManualStatus();
+        void loadSortScores();
+        void recordManualScoreWon();
     public:
         explicit PuzzleController(QObject *parent = nullptr);
 
@@ -52,6 +59,7 @@ class PuzzleController : public QObject {
         QString getStatusMessage() const;
         int getMoveCount() const;
         int getFinalScore() const;
+        QVariantList getBestScores() const;
 
         Q_INVOKABLE void setMode(const QString &mode_name);
         Q_INVOKABLE void generateAndSolve(int difficulty_index);

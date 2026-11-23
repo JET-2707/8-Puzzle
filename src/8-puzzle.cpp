@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     );
 
     engine.loadFromModule("Puzzle", "Main");
-    if (engine.rootObjects().isEmpty()) {
+    if(engine.rootObjects().isEmpty()){
         engine.load(QUrl(QStringLiteral("qrc:/qt/qml/Puzzle/Main.qml")));
     }
 

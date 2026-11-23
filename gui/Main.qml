@@ -35,11 +35,17 @@ Window {
 
             onModeSelected: function(mode_name){
                 custom_panel.visible = false
+
+                if(mode_name !== "manual"){ scores_menu.scores_menu_open = false }
+
                 puzzle_controller.setMode(mode_name)
             }
             onDifficultySelected: function(new_difficulty){ root_window.selected_difficulty = new_difficulty }
             onGenerateRequested: function(){ puzzle_controller.generateAndSolve(root_window.selected_difficulty) }
             onCustomConfigRequested: function(){ custom_panel.visible = !custom_panel.visible }
+            onScoresMenuRequested: function(){
+                if(puzzle_controller.is_manual_mode){ scores_menu.scores_menu_open = !scores_menu.scores_menu_open }
+            }
         }
 
         Board {
@@ -74,6 +80,18 @@ Window {
                 var ok_result = puzzle_controller.solveCustomBoards(start_list, goal_list)
                 if(ok_result){ custom_panel.visible = false }
             }
+        }
+
+        ScoresMenu {
+            id: scores_menu
+            property bool scores_menu_open: false
+            visible: scores_menu_open && puzzle_controller.is_manual_mode
+            anchors.top: top_bar.bottom
+            anchors.topMargin: 10
+            anchors.right: parent.right
+            scores_list: (puzzle_controller.best_scores) ? puzzle_controller.best_scores : []
+
+            onClosedRequested: scores_menu_open = false
         }
 
         StepControls {

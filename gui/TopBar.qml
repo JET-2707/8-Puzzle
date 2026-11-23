@@ -18,6 +18,7 @@ Item {
     signal difficultySelected(int new_difficulty)
     signal generateRequested()
     signal customConfigRequested()
+    signal scoresMenuRequested()
 
     Column {
         id: top_column
@@ -226,6 +227,39 @@ Item {
 
                 HoverHandler { cursorShape: Qt.PointingHandCursor }
             }
+
+            Button {
+                id: scores_btn
+                width: 82
+                height: 36
+                anchors.left: generate_btn.right
+                anchors.leftMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
+                visible: top_bar_root.is_manual_mode
+                text: "Scores"
+                onClicked: top_bar_root.scoresMenuRequested()
+
+                contentItem: Text {
+                    text: scores_btn.text
+                    font.pixelSize: 13
+                    font.bold: true
+                    color: "#ffffff"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    width: scores_btn.width
+                    height: scores_btn.height
+                    radius: 10
+                    color: (scores_btn.down) ? "#2563eb" : ((scores_btn.hovered) ? "#4b8ff7" : "#3b82f6")
+
+                    Behavior on color { ColorAnimation { duration: 120 } }
+                }
+
+                HoverHandler { cursorShape: Qt.PointingHandCursor }
+            }
         }
 
         Item {
@@ -237,7 +271,7 @@ Item {
                 id: step_label
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                text: top_bar_root.is_manual_mode ? ("Moves: " + top_bar_root.current_step) : ("Step " + top_bar_root.current_step + " / " + top_bar_root.total_steps)
+                text: (top_bar_root.is_manual_mode) ? ("Moves: " + top_bar_root.current_step) : ("Step " + top_bar_root.current_step + " / " + top_bar_root.total_steps)
                 font.pixelSize: 14
                 font.weight: Font.Medium
                 color: "#cbd5e1"

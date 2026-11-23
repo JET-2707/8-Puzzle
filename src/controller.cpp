@@ -1,11 +1,36 @@
 #include "../headers/controller.hpp"
 #include "../headers/board.hpp"
-#include "core.hpp"
+#include "../headers/core.hpp"
+#include "../headers/files.hpp"
+
 #include <qobject.h>
 #include <qtmetamacros.h>
 #include <vector>
 
-PuzzleController::PuzzleController(QObject *parent) : QObject(parent){ generateAndSolve(0); }
+PuzzleController::PuzzleController(QObject *parent) : QObject(parent){ loadSortScores(); generateAndSolve(0); }
+
+void PuzzleController::loadSortScores(){
+    best_scores_vector =  Files::loadFile();
+
+    if(best_scores_vector.size() < 5){ best_scores_vector = { Score(), Score(), Score(), Score(), Score()}; }
+    else if(best_scores_vector.size() > 5){ best_scores_vector.resize(5); }
+    Score::sortScores(best_scores_vector);
+}
+
+void PuzzleController::recordManualScoreWon(){
+    if(score_recorded){ return; }
+    if(manual_mode.getGame().getGameStatus() != GAME_STATUS::WIN){ return; }
+
+    int earned_points = manual_mode.getFinalScore().getPoints();
+    best_scores_vector.push_back(Score(earned_points));
+
+    Score::sortScores(best_scores_vector);
+
+    if(best_scores_vector.size() > 5){ best_scores_vector.resize(5); }
+
+    Files::saveFile(best_scores_vector);
+    score_recorded = true;
+}
 
 QStringList PuzzleController::boardToStringList(const Board& goal_board) const {
     QStringList list;
@@ -42,6 +67,7 @@ bool PuzzleController::parseBoardInput(const QStringList &raw_values, std::vecto
 
 void PuzzleController::refreshManualStatus(){
     manual_mode.update();
+    recordManualScoreWon();
     GAME_STATUS game_status = manual_mode.getGame().getGameStatus();
 
     if(game_status == GAME_STATUS::WIN){ status_message_ = QStringLiteral("Finished. Score: %1").arg(manual_mode.getFinalScore().getPoints()); }
@@ -93,6 +119,7 @@ void PuzzleController::generateAndSolve(int difficulty_index){
     if(getIsManualMode()){
         DIFFICULTY manual_difficulty = (difficulty_index == 0) ? DIFFICULTY::EASY : DIFFICULTY::NO_EASY;
         manual_mode.newGame(manual_difficulty);
+        score_recorded = false;
         current_solvable = true;
         refreshManualStatus();
         emit stateChanged();
@@ -115,10 +142,20 @@ int PuzzleController::getMoveCount() const { return manual_mode.getGame().getMov
 
 int PuzzleController::getFinalScore() const { return manual_mode.getFinalScore().getPoints(); }
 
+QVariantList PuzzleController::getBestScores() const {
+    QVariantList results;
+
+    results.reserve(static_cast<int>(best_scores_vector.size()));
+
+    for(const Score &sc : best_scores_vector){ results.append(sc.getPoints()); }
+    return results;
+}
+
 void PuzzleController::setMode(const QString &mode_name){
     if(mode_name == QStringLiteral("manual")){
         active_mode = QStringLiteral("manual");
         manual_mode.newGame(DIFFICULTY::EASY);
+        score_recorded = false;
         current_solvable = true;
         refreshManualStatus();
         emit stateChanged();
