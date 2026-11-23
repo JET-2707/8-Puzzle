@@ -3,7 +3,7 @@ import QtQuick.Controls
 
 Item {
     id: controls_root
-    height: 38
+    height: (visible) ? 38 : 0
 
     property int current_step: 0
     property int total_steps: 0
@@ -40,6 +40,8 @@ Item {
             }
 
             background: Rectangle {
+                width: prev_btn.width
+                height: prev_btn.height
                 radius: 10
                 color: (!prev_btn.enabled) ? "#1e222b" : ((prev_btn.down) ? "#2563eb" : ((prev_btn.hovered) ? "#4b8ff7" : "#3b82f6"))
                 border.color: "#2e3440"
@@ -70,6 +72,8 @@ Item {
             }
 
             background: Rectangle {
+                width: restart_btn.width
+                height: restart_btn.height
                 radius: 10
                 color: (!restart_btn.enabled) ? "#1e222b" : ((restart_btn.down) ? "#2563eb" : ((restart_btn.hovered) ? "#4b8ff7" : "#3b82f6"))
                 border.color: "#2e3440"
@@ -100,6 +104,8 @@ Item {
             }
 
             background: Rectangle {
+                width: next_btn.width
+                height: next_btn.height
                 radius: 10
                 color: (!next_btn.enabled) ? "#1e222b" : ((next_btn.down) ? "#2563eb" : ((next_btn.hovered) ? "#4b8ff7" : "#3b82f6"))
                 border.color: "#2e3440"

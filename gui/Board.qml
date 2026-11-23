@@ -6,7 +6,8 @@ Item {
     property var tile_values: []
     property int next_tile_index: -1
     property bool is_solved: false
-
+    property bool interactive_tiles: false
+    signal tileClicked(int tile_index)
     readonly property int board_size: Math.max(0, Math.min(width, height))
 
     Rectangle {
@@ -39,14 +40,13 @@ Item {
                     readonly property var current_list: (board_root.tile_values) ? board_root.tile_values : []
                     readonly property string tile_label: (index < current_list.length) ? String(current_list[index]) : ""
                     readonly property bool is_empty: tile_label === "" || tile_label === "0"
-                    readonly property bool is_hint: (!board_root.is_solved && index === board_root.next_tile_index)
+                    readonly property bool is_hint: (!board_root.is_solved && !board_root.interactive_tiles && index === board_root.next_tile_index)
 
-                    color: (is_empty) ? "transparent" : ((is_hint) ? "#DBEAFE" : "#FFFFFF")
-
+                    color: (is_empty) ? "transparent" : ((tile_mouse.containsMouse && board_root.interactive_tiles && !board_root.is_solved) ? "#F8FAFC" : ((is_hint) ? "#DBEAFE" : "#FFFFFF"))
                     border.width: (is_empty) ? 0 : ((is_hint) ? 2 : 1)
                     border.color: (is_hint) ? "#2563EB" : "#CBD5E1"
 
-                    Behavior on color { ColorAnimation { duration: 140 } }
+                    Behavior on color { ColorAnimation { duration: 120 } }
 
                     Text {
                         anchors.centerIn: parent
@@ -55,6 +55,15 @@ Item {
                         font.pixelSize: Math.max(16, tile_grid.cell_size * 0.34)
                         font.weight: Font.Bold
                         color: (tile_card.is_hint) ? "#1D4ED8" : "#0F172A"
+                    }
+
+                    MouseArea {
+                        id: tile_mouse
+                        anchors.fill: parent
+                        enabled: board_root.interactive_tiles && !tile_card.is_empty && !board_root.is_solved
+                        hoverEnabled: true
+                        cursorShape: (enabled) ? Qt.PointingHandCursor : Qt.ArrowCursor
+                        onClicked: board_root.tileClicked(index)
                     }
                 }
             }
