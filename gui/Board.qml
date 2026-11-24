@@ -1,5 +1,7 @@
 import QtQuick
 
+pragma ComponentBehavior: Bound
+
 Item {
     id: board_root
 
@@ -33,6 +35,7 @@ Item {
 
                 Rectangle {
                     id: tile_card
+                    required property int index
                     width: tile_grid.cell_size
                     height: tile_grid.cell_size
                     radius: 10
@@ -63,7 +66,7 @@ Item {
                         enabled: board_root.interactive_tiles && !tile_card.is_empty && !board_root.is_solved
                         hoverEnabled: true
                         cursorShape: (enabled) ? Qt.PointingHandCursor : Qt.ArrowCursor
-                        onClicked: board_root.tileClicked(index)
+                        onClicked: board_root.tileClicked(tile_card.index)
                     }
                 }
             }

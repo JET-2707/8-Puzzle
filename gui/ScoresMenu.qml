@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+pragma ComponentBehavior: Bound
+
 Rectangle {
     id: scores_menu_root
     visible: false
@@ -76,6 +78,8 @@ Rectangle {
                 model: 5
 
                 Rectangle {
+                    id: score_row
+                    required property int index
                     width: scores_column.width
                     height: 28
                     radius: 7
@@ -90,7 +94,7 @@ Rectangle {
                         anchors.left: parent.left
                         anchors.leftMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
-                        text: "#" + (index + 1)
+                        text: "#" + (score_row.index + 1)
                         font.pixelSize: 12
                         font.bold: true
                         color: "#94a3b8"
@@ -100,10 +104,10 @@ Rectangle {
                         anchors.right: parent.right
                         anchors.rightMargin: 10
                         anchors.verticalCenter: parent.verticalCenter
-                        text: pts_val + " pts"
+                        text: score_row.pts_val + " pts"
                         font.pixelSize: 12
                         font.bold: true
-                        color: (pts_val > 0) ? "#4ade80" : "#cbd5e1"
+                        color: (score_row.pts_val > 0) ? "#4ade80" : "#cbd5e1"
                     }
                 }
             }

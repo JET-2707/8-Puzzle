@@ -52,6 +52,7 @@ Window {
             onScoresMenuRequested: function(){
                 if(puzzle_controller.is_manual_mode){ scores_menu.scores_menu_open = !scores_menu.scores_menu_open }
             }
+            onQuitRequested: function(){ Qt.quit() }
         }
 
         Board {

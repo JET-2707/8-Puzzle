@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+pragma ComponentBehavior: Bound
+
 Rectangle {
     id: custom_panel_root
     visible: false
@@ -93,6 +95,7 @@ Rectangle {
                     color: "#E2E8F0"
 
                     Grid {
+                        id: start_grid
                         anchors.fill: parent
                         anchors.margins: 6
                         columns: 3
@@ -107,8 +110,9 @@ Rectangle {
 
                             Rectangle {
                                 id: start_cell
-                                width: parent.mini_cell
-                                height: parent.mini_cell
+                                required property int index
+                                width: start_grid.mini_cell
+                                height: start_grid.mini_cell
                                 radius: 5
                                 color: "#FFFFFF"
                                 border.width: 1
@@ -176,6 +180,7 @@ Rectangle {
                     color: "#E2E8F0"
 
                     Grid {
+                        id: goal_grid
                         anchors.fill: parent
                         anchors.margins: 6
                         columns: 3
@@ -190,8 +195,9 @@ Rectangle {
 
                             Rectangle {
                                 id: goal_cell
-                                width: parent.mini_cell
-                                height: parent.mini_cell
+                                required property int index
+                                width: goal_grid.mini_cell
+                                height: goal_grid.mini_cell
                                 radius: 5
                                 color: "#FFFFFF"
                                 border.width: 1

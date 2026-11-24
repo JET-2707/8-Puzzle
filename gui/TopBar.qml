@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+pragma ComponentBehavior: Bound
+
 Item {
     id: top_bar_root
     height: top_column.height
@@ -21,6 +23,7 @@ Item {
     signal generateRequested()
     signal customConfigRequested()
     signal scoresMenuRequested()
+    signal quitRequested()
 
     Column {
         id: top_column
@@ -31,6 +34,39 @@ Item {
             id: controls_row
             width: parent.width
             height: 42
+
+            Button {
+                id: exit_btn
+                width: 68
+                height: 42
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Exit"
+                onClicked: top_bar_root.quitRequested()
+
+                contentItem: Text {
+                    text: exit_btn.text
+                    font.pixelSize: 13
+                    font.bold: true
+                    color: "#ffffff"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    width: exit_btn.width
+                    height: exit_btn.height
+                    radius: 12
+                    color: (exit_btn.down) ? "#2563eb" : ((exit_btn.hovered) ? "#4b8ff7" : "#1e222b")
+                    border.color: (exit_btn.down || exit_btn.hovered) ? "#3b82f6" : "#2e3440"
+                    border.width: 2
+
+                    Behavior on color { ColorAnimation { duration: 120 } }
+                }
+
+                HoverHandler { cursorShape: Qt.PointingHandCursor }
+            }
 
             Item {
                 id: mode_selector
@@ -72,15 +108,19 @@ Item {
                             model: mode_selector.mode_options
 
                             Item {
+                                id: mode_option
+                                required property int index
+                                required property string modelData
+
                                 width: (mode_selector.width - 8) / 2
                                 height: mode_selector.height - 8
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: modelData
+                                    text: mode_option.modelData
                                     font.pixelSize: 13
                                     font.bold: true
-                                    color: (top_bar_root.mode_index === index) ? "#ffffff" : "#94a3b8"
+                                    color: (top_bar_root.mode_index === mode_option.index) ? "#ffffff" : "#94a3b8"
 
                                     Behavior on color { ColorAnimation { duration: 150 } }
                                 }
@@ -90,7 +130,7 @@ Item {
                                     height: parent.height
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        if(top_bar_root.mode_index !== index){ top_bar_root.modeSelected(index === 1 ? "manual" : "smart") }
+                                        if(top_bar_root.mode_index !== mode_option.index){ top_bar_root.modeSelected(mode_option.index === 1 ? "manual" : "smart") }
                                     }
                                 }
                             }
@@ -138,15 +178,19 @@ Item {
                             model: difficulty_selector.difficulty_options
 
                             Item {
+                                id: difficulty_option
+                                required property int index
+                                required property string modelData
+
                                 width: (difficulty_selector.width - 8) / 2
                                 height: difficulty_selector.height - 8
 
                                 Text {
                                     anchors.centerIn: parent
-                                    text: modelData
+                                    text: difficulty_option.modelData
                                     font.pixelSize: 13
                                     font.bold: true
-                                    color: (top_bar_root.difficulty_index === index) ? "#ffffff" : "#94a3b8"
+                                    color: (top_bar_root.difficulty_index === difficulty_option.index) ? "#ffffff" : "#94a3b8"
 
                                     Behavior on color { ColorAnimation { duration: 150 } }
                                 }
@@ -156,7 +200,7 @@ Item {
                                     height: parent.height
                                     cursorShape: Qt.PointingHandCursor
                                     onClicked: {
-                                        if(top_bar_root.difficulty_index !== index){ top_bar_root.difficultySelected(index) }
+                                        if(top_bar_root.difficulty_index !== difficulty_option.index){ top_bar_root.difficultySelected(difficulty_option.index) }
                                     }
                                 }
                             }
