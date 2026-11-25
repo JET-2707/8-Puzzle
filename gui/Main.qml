@@ -9,7 +9,7 @@ Window {
     minimumHeight: 500
     visible: true
     title: "8-Puzzle"
-    color: "#F6F7F9"
+    color: "#11111B"
 
     property int selected_difficulty: 0
 

@@ -33,7 +33,7 @@ Item {
                 text: prev_btn.text
                 font.pixelSize: 13
                 font.bold: true
-                color: (prev_btn.enabled) ? "#ffffff" : "#64748b"
+                color: (prev_btn.enabled) ? "#CDD6F4" : "#6C7086"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -43,8 +43,8 @@ Item {
                 width: prev_btn.width
                 height: prev_btn.height
                 radius: 10
-                color: (!prev_btn.enabled) ? "#1e222b" : ((prev_btn.down) ? "#2563eb" : ((prev_btn.hovered) ? "#4b8ff7" : "#3b82f6"))
-                border.color: "#2e3440"
+                color: (!prev_btn.enabled) ? "#1E1E2E" : ((prev_btn.down) ? "#585B70" : ((prev_btn.hovered) ? "#45475A" : "#313244"))
+                border.color: "#45475A"
                 border.width: (prev_btn.enabled) ? 0 : 2
 
                 Behavior on color { ColorAnimation { duration: 120 } }
@@ -65,7 +65,7 @@ Item {
                 text: restart_btn.text
                 font.pixelSize: 13
                 font.bold: true
-                color: (restart_btn.enabled) ? "#ffffff" : "#64748b"
+                color: (restart_btn.enabled) ? "#CDD6F4" : "#6C7086"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -75,8 +75,8 @@ Item {
                 width: restart_btn.width
                 height: restart_btn.height
                 radius: 10
-                color: (!restart_btn.enabled) ? "#1e222b" : ((restart_btn.down) ? "#2563eb" : ((restart_btn.hovered) ? "#4b8ff7" : "#3b82f6"))
-                border.color: "#2e3440"
+                color: (!restart_btn.enabled) ? "#1E1E2E" : ((restart_btn.down) ? "#585B70" : ((restart_btn.hovered) ? "#45475A" : "#313244"))
+                border.color: "#45475A"
                 border.width: (restart_btn.enabled) ? 0 : 2
 
                 Behavior on color { ColorAnimation { duration: 120 } }
@@ -97,7 +97,7 @@ Item {
                 text: next_btn.text
                 font.pixelSize: 13
                 font.bold: true
-                color: (next_btn.enabled) ? "#ffffff" : "#64748b"
+                color: (next_btn.enabled) ? "#1E1E2E" : "#6C7086"
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
@@ -107,8 +107,8 @@ Item {
                 width: next_btn.width
                 height: next_btn.height
                 radius: 10
-                color: (!next_btn.enabled) ? "#1e222b" : ((next_btn.down) ? "#2563eb" : ((next_btn.hovered) ? "#4b8ff7" : "#3b82f6"))
-                border.color: "#2e3440"
+                color: (!next_btn.enabled) ? "#1E1E2E" : ((next_btn.down) ? "#89B4FA" : ((next_btn.hovered) ? "#CBA6F7" : "#6857B3"))
+                border.color: "#45475A"
                 border.width: (next_btn.enabled) ? 0 : 2
 
                 Behavior on color { ColorAnimation { duration: 120 } }

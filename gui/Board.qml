@@ -18,7 +18,7 @@ Item {
         height: board_root.board_size
         anchors.centerIn: parent
         radius: 14
-        color: "#E2E8F0"
+        color: "#1E1E2E"
 
         Grid {
             id: tile_grid
@@ -45,9 +45,9 @@ Item {
                     readonly property bool is_empty: tile_label === "" || tile_label === "0"
                     readonly property bool is_hint: (!board_root.is_solved && !board_root.interactive_tiles && index === board_root.next_tile_index)
 
-                    color: (is_empty) ? "transparent" : ((tile_mouse.containsMouse && board_root.interactive_tiles && !board_root.is_solved) ? "#F8FAFC" : ((is_hint) ? "#DBEAFE" : "#FFFFFF"))
+                    color: (is_empty) ? "transparent" : ((tile_mouse.containsMouse && board_root.interactive_tiles && !board_root.is_solved) ? "#45475A" : ((is_hint) ? "#45475A" : "#313244"))
                     border.width: (is_empty) ? 0 : ((is_hint) ? 2 : 1)
-                    border.color: (is_hint) ? "#2563EB" : "#CBD5E1"
+                    border.color: (is_hint) ? "#6857B3" : "#45475A"
 
                     Behavior on color { ColorAnimation { duration: 120 } }
 
@@ -57,7 +57,7 @@ Item {
                         text: tile_card.tile_label
                         font.pixelSize: Math.max(16, tile_grid.cell_size * 0.34)
                         font.weight: Font.Bold
-                        color: (tile_card.is_hint) ? "#1D4ED8" : "#0F172A"
+                        color: (tile_card.is_hint) ? "#6857B3" : "#CDD6F4"
                     }
 
                     MouseArea {

@@ -48,7 +48,7 @@ Item {
                     text: exit_btn.text
                     font.pixelSize: 13
                     font.bold: true
-                    color: "#ffffff"
+                    color: "#CDD6F4"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
@@ -58,8 +58,8 @@ Item {
                     width: exit_btn.width
                     height: exit_btn.height
                     radius: 12
-                    color: (exit_btn.down) ? "#2563eb" : ((exit_btn.hovered) ? "#4b8ff7" : "#1e222b")
-                    border.color: (exit_btn.down || exit_btn.hovered) ? "#3b82f6" : "#2e3440"
+                    color: (exit_btn.down) ? "#6857B3" : ((exit_btn.hovered) ? "#45475A" : "#313244")
+                    border.color: (exit_btn.down || exit_btn.hovered) ? "#6857B3" : "#45475A"
                     border.width: 2
 
                     Behavior on color { ColorAnimation { duration: 120 } }
@@ -82,8 +82,8 @@ Item {
                     width: parent.width
                     height: parent.height
                     radius: 12
-                    color: "#1e222b"
-                    border.color: "#2e3440"
+                    color: "#1E1E2E"
+                    border.color: "#45475A"
                     border.width: 2
 
                     Rectangle {
@@ -93,7 +93,7 @@ Item {
                         y: 4
                         x: 4 + top_bar_root.mode_index * width
                         radius: 9
-                        color: "#3b82f6"
+                        color: "#6857B3"
 
                         Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
                     }
@@ -120,7 +120,7 @@ Item {
                                     text: mode_option.modelData
                                     font.pixelSize: 13
                                     font.bold: true
-                                    color: (top_bar_root.mode_index === mode_option.index) ? "#ffffff" : "#94a3b8"
+                                    color: (top_bar_root.mode_index === mode_option.index) ? "#1E1E2E" : "#A6ADC8"
 
                                     Behavior on color { ColorAnimation { duration: 150 } }
                                 }
@@ -152,8 +152,8 @@ Item {
                     width: parent.width
                     height: parent.height
                     radius: 12
-                    color: "#1e222b"
-                    border.color: "#2e3440"
+                    color: "#1E1E2E"
+                    border.color: "#45475A"
                     border.width: 2
 
                     Rectangle {
@@ -163,7 +163,7 @@ Item {
                         y: 4
                         x: 4 + top_bar_root.difficulty_index * width
                         radius: 9
-                        color: "#3b82f6"
+                        color: "#6857B3"
 
                         Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
                     }
@@ -190,7 +190,7 @@ Item {
                                     text: difficulty_option.modelData
                                     font.pixelSize: 13
                                     font.bold: true
-                                    color: (top_bar_root.difficulty_index === difficulty_option.index) ? "#ffffff" : "#94a3b8"
+                                    color: (top_bar_root.difficulty_index === difficulty_option.index) ? "#1E1E2E" : "#A6ADC8"
 
                                     Behavior on color { ColorAnimation { duration: 150 } }
                                 }
@@ -223,7 +223,7 @@ Item {
                     text: generate_btn.text
                     font.pixelSize: 13
                     font.bold: true
-                    color: "#ffffff"
+                    color: "#1E1E2E"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
@@ -233,7 +233,7 @@ Item {
                     width: generate_btn.width
                     height: generate_btn.height
                     radius: 10
-                    color: (generate_btn.down) ? "#2563eb" : ((generate_btn.hovered) ? "#4b8ff7" : "#3b82f6")
+                    color: (generate_btn.down) ? "#89B4FA" : ((generate_btn.hovered) ? "#CBA6F7" : "#6857B3")
 
                     Behavior on color { ColorAnimation { duration: 120 } }
                 }
@@ -256,7 +256,7 @@ Item {
                     text: custom_btn.text
                     font.pixelSize: 13
                     font.bold: true
-                    color: "#ffffff"
+                    color: "#1E1E2E"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
@@ -266,7 +266,7 @@ Item {
                     width: custom_btn.width
                     height: custom_btn.height
                     radius: 10
-                    color: (custom_btn.down) ? "#2563eb" : ((custom_btn.hovered) ? "#4b8ff7" : "#3b82f6")
+                    color: (custom_btn.down) ? "#89B4FA" : ((custom_btn.hovered) ? "#CBA6F7" : "#6857B3")
 
                     Behavior on color { ColorAnimation { duration: 120 } }
                 }
@@ -289,7 +289,7 @@ Item {
                     text: scores_btn.text
                     font.pixelSize: 13
                     font.bold: true
-                    color: "#ffffff"
+                    color: "#1E1E2E"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
@@ -299,7 +299,7 @@ Item {
                     width: scores_btn.width
                     height: scores_btn.height
                     radius: 10
-                    color: (scores_btn.down) ? "#2563eb" : ((scores_btn.hovered) ? "#4b8ff7" : "#3b82f6")
+                    color: (scores_btn.down) ? "#89B4FA" : ((scores_btn.hovered) ? "#CBA6F7" : "#6857B3")
 
                     Behavior on color { ColorAnimation { duration: 120 } }
                 }
@@ -320,7 +320,7 @@ Item {
                 text: (top_bar_root.is_manual_mode) ? ("Moves: " + top_bar_root.current_step) : ("Step " + top_bar_root.current_step + " / " + top_bar_root.total_steps)
                 font.pixelSize: 14
                 font.weight: Font.Medium
-                color: "#cbd5e1"
+                color: "#CDD6F4"
             }
 
             Text {
@@ -331,7 +331,7 @@ Item {
                 text: "Time: " + top_bar_root.remaining_time_txt
                 font.pixelSize: 14
                 font.bold: true
-                color: "#f59e0b"
+                color: "#FAB387"
             }
 
             Text {
@@ -341,7 +341,7 @@ Item {
                 text: (top_bar_root.is_solved) ? "Solved" : "In progress"
                 font.pixelSize: 13
                 font.weight: Font.DemiBold
-                color: (top_bar_root.is_solved) ? "#4ade80" : "#cbd5e1"
+                color: (top_bar_root.is_solved) ? "#A6E3A1" : "#CDD6F4"
             }
         }
 
@@ -351,7 +351,7 @@ Item {
             visible: top_bar_root.status_message !== ""
             text: top_bar_root.status_message
             font.pixelSize: 12
-            color: "#94a3b8"
+            color: "#A6ADC8"
             elide: Text.ElideRight
         }
     }

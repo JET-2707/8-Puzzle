@@ -7,9 +7,9 @@ Rectangle {
     id: custom_panel_root
     visible: false
     radius: 12
-    color: "#FFFFFF"
+    color: "#1E1E2E"
     border.width: 1
-    border.color: "#CBD5E1"
+    border.color: "#45475A"
     z: 20
 
     property string status_text: ""
@@ -55,15 +55,35 @@ Rectangle {
                 text: "Start/Goal configuration"
                 font.pixelSize: 15
                 font.weight: Font.Bold
-                color: "#0F172A"
+                color: "#CDD6F4"
             }
 
             Button {
+                id: close_btn
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+                width: 56
                 height: 24
                 text: "Close"
                 onClicked: custom_panel_root.closedRequested()
+
+                contentItem: Text {
+                    text: close_btn.text
+                    font.pixelSize: 11
+                    font.bold: true
+                    color: "#CDD6F4"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                background: Rectangle {
+                    radius: 7
+                    color: (close_btn.down) ? "#585B70" : ((close_btn.hovered) ? "#45475A" : "#313244")
+
+                Behavior on color { ColorAnimation { duration: 120 } }
+                }
+                
+                HoverHandler { cursorShape: Qt.PointingHandCursor }
             }
         }
 
@@ -85,14 +105,14 @@ Rectangle {
                     text: "Start"
                     font.pixelSize: 12
                     font.weight: Font.DemiBold
-                    color: "#334155"
+                    color: "#A6ADC8"
                 }
 
                 Rectangle {
                     width: boards_row.mini_board_size
                     height: boards_row.mini_board_size
                     radius: 8
-                    color: "#E2E8F0"
+                    color: "#181825"
 
                     Grid {
                         id: start_grid
@@ -114,9 +134,9 @@ Rectangle {
                                 width: start_grid.mini_cell
                                 height: start_grid.mini_cell
                                 radius: 5
-                                color: "#FFFFFF"
+                                color: "#313244"
                                 border.width: 1
-                                border.color: "#CBD5E1"
+                                border.color: "#45475A"
 
                                 property string cell_text: custom_panel_root.default_start[index]
 
@@ -129,7 +149,7 @@ Rectangle {
                                     maximumLength: 1
                                     font.pixelSize: 14
                                     font.weight: Font.Bold
-                                    color: "#0F172A"
+                                    color: "#CDD6F4"
                                     onTextChanged: start_cell.cell_text = text
                                 }
                             }
@@ -155,15 +175,15 @@ Rectangle {
                         text: "Goal"
                         font.pixelSize: 12
                         font.weight: Font.DemiBold
-                        color: "#334155"
+                        color: "#A6ACD8"
                     }
 
                     Text {
                         anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
-                        text: "1..8"
+                        text: "1...8"
                         font.pixelSize: 11
-                        color: "#2563EB"
+                        color: "#6857B3"
 
                         MouseArea {
                             anchors.fill: parent
@@ -177,7 +197,7 @@ Rectangle {
                     width: boards_row.mini_board_size
                     height: boards_row.mini_board_size
                     radius: 8
-                    color: "#E2E8F0"
+                    color: "#181825"
 
                     Grid {
                         id: goal_grid
@@ -199,9 +219,9 @@ Rectangle {
                                 width: goal_grid.mini_cell
                                 height: goal_grid.mini_cell
                                 radius: 5
-                                color: "#FFFFFF"
+                                color: "#313244"
                                 border.width: 1
-                                border.color: "#CBD5E1"
+                                border.color: "#45475A"
 
                                 property string cell_text: custom_panel_root.default_goal[index]
 
@@ -214,7 +234,9 @@ Rectangle {
                                     maximumLength: 1
                                     font.pixelSize: 14
                                     font.weight: Font.Bold
-                                    color: "#0F172A"
+                                    color: "#CDD6F4"
+                                    selectionColor: "#6857B3"
+                                    selectedTextColor: "#1E1E2E"
                                     onTextChanged: goal_cell.cell_text = text
                                 }
                             }
@@ -230,18 +252,40 @@ Rectangle {
             text: custom_panel_root.status_text
             font.pixelSize: 12
             font.weight: Font.DemiBold
-            color: (custom_panel_root.is_valid_status) ? "#15803D" : "#B91C1C"
+            color: (custom_panel_root.is_valid_status) ? "#A6E3A1" : "#F38BA8"
         }
 
         Button {
-            width: parent.width
+            id: confirm_btn
+            // width: parent.width
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 300
             height: 36
             text: "Confirm and solve"
+
             onClicked: {
                 var start_vals = custom_panel_root.collectValues(start_repeater)
                 var goal_vals = custom_panel_root.collectValues(goal_repeater)
                 custom_panel_root.solveRequested(start_vals, goal_vals)
             }
+    
+            contentItem: Text {
+                text: confirm_btn.text
+                font.pixelSize: 13
+                font.bold: true
+                color: "#CDD6F4"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            background: Rectangle {
+                radius: 10
+                color: (confirm_btn.down) ? "#585B70" : ((confirm_btn.hovered) ? "#45475A" : "#313244")
+
+                Behavior on color { ColorAnimation { duration: 120 } }
+            }
+
+            HoverHandler { cursorShape: Qt.PointingHandCursor }
         }
     }
 }

@@ -9,8 +9,8 @@ Rectangle {
     width: 220
     height: 230
     radius: 12
-    color: "#1e222b"
-    border.color: "#2e3440"
+    color: "#1E1E2E"
+    border.color: "#45475A"
     border.width: 2
     z: 35
 
@@ -37,7 +37,7 @@ Rectangle {
                 text: "Best Scores"
                 font.pixelSize: 14
                 font.bold: true
-                color: "#ffffff"
+                color: "#CDD6F4"
             }
 
             Button {
@@ -53,7 +53,7 @@ Rectangle {
                     text: close_scores_btn.text
                     font.pixelSize: 11
                     font.bold: true
-                    color: "#ffffff"
+                    color: "#1E1E2E"
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -62,7 +62,9 @@ Rectangle {
                     width: close_scores_btn.width
                     height: close_scores_btn.height
                     radius: 7
-                    color: (close_scores_btn.down) ? "#2563eb" : "#3b82f6"
+                    color: (close_scores_btn.down) ? "#89B4FA" : "#6857B3"
+                    
+                    Behavior on color { ColorAnimation {duration: 120 } }
                 }
 
                 HoverHandler { cursorShape: Qt.PointingHandCursor }
@@ -83,8 +85,8 @@ Rectangle {
                     width: scores_column.width
                     height: 28
                     radius: 7
-                    color: "#141820"
-                    border.color: "#2e3440"
+                    color: "#313244"
+                    border.color: "#45475A"
                     border.width: 1
 
                     readonly property var safe_list: (scores_menu_root.scores_list) ? scores_menu_root.scores_list : []
@@ -97,7 +99,7 @@ Rectangle {
                         text: "#" + (score_row.index + 1)
                         font.pixelSize: 12
                         font.bold: true
-                        color: "#94a3b8"
+                        color: "#A6ADC8"
                     }
 
                     Text {
@@ -107,7 +109,7 @@ Rectangle {
                         text: score_row.pts_val + " pts"
                         font.pixelSize: 12
                         font.bold: true
-                        color: (score_row.pts_val > 0) ? "#4ade80" : "#cbd5e1"
+                        color: (score_row.pts_val > 0) ? "#A6E3A1" : "#CDD6F4"
                     }
                 }
             }
